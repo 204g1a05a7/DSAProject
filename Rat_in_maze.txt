@@ -1,0 +1,64 @@
+import random
+WALL = "█"
+PATH = " "
+START = "S"
+END = "E"
+
+def generate_maze(n, wall_prob):
+   
+    maze = [[WALL] * n for _ in range(n)]
+
+    
+    maze[0][0] = START
+    maze[n - 1][n - 1] = END
+
+    
+    max_walls = int(n * n * wall_prob)
+
+    
+    walls_placed = 0
+    while walls_placed < max_walls:
+        x = random.randint(0, n - 1)
+        y = random.randint(0, n - 1)
+        if maze[y][x] == WALL:
+            maze[y][x] = PATH
+            walls_placed += 1
+
+    return maze
+
+def print_maze(maze):
+    for row in maze:
+        print("".join(row))
+
+def find_path(maze, x, y):
+    if x < 0 or y < 0 or x >= len(maze) or y >= len(maze) or maze[y][x] != PATH:
+        return False
+
+    maze[y][x] = "X"  
+
+    if (x, y) == (len(maze) - 1, len(maze) - 1):
+        return True  
+
+  
+    if find_path(maze, x + 1, y) or find_path(maze, x - 1, y) or find_path(maze, x, y + 1) or find_path(maze, x, y - 1):
+        return True
+
+    maze[y][x] = PATH  # Unmark the path if it doesn't lead to the end
+    return False
+
+def main():
+    n = int(input("Enter the size of the maze (n x n): "))
+    wall_prob = 0.25  
+
+    maze = generate_maze(n, wall_prob)
+    print("Generated Maze:")
+    print_maze(maze)
+
+    if find_path(maze, 0, 0):
+        print("Path found:")
+        print_maze(maze)
+    else:
+        print("No path found.")
+
+if _name_ == "__main":
+    main()
